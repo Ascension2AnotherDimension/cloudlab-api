@@ -1,0 +1,9 @@
+services:
+  api:
+    build: .
+    image: cloudlab-api:prod
+    ports:
+      - "5000:5000"
+    environment:
+      APP_NAME: "Chase Microservice"
+    restart: unless-stopped
