@@ -1,0 +1,29 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Build Docker image
+        run: docker build -t cloudlab-api:ci .
+
+      - name: Run container
+        run: |
+          docker run -d --rm --name cloudlab-ci -p 5000:5000 cloudlab-api:ci
+          sleep 3
+
+      - name: Health check
+        run: |
+          curl -f http://localhost:5000/health
+
+      - name: Cleanup
+        if: always()
+        run: docker stop cloudlab-ci || true
